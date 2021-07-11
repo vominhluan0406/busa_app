@@ -9,9 +9,9 @@ public class Response {
     private static final String MSG = "message";
     private static final String SUCCESS_MSG = "Success";
     private static final String ERROR_MSG = "Error";
-    private static final String PAGE_LIMIT = "limit";
-    private static final String TOTAL = "total";
-    private static final String URL = "url";
+    public static final String PAGE_LIMIT = "limit";
+    public static final String TOTAL = "total";
+    public static final String URL = "url";
 
 
 
@@ -34,7 +34,7 @@ public class Response {
     public static JSONObject error(String msg){
         response.put(DATA,null);
         response.put(CODE,0);
-        response.put(MSG,ERROR_MSG);
+        response.put(MSG,msg);
         return response;
     }
 }
