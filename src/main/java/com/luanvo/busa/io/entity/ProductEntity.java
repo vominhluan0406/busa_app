@@ -1,12 +1,16 @@
 package com.luanvo.busa.io.entity;
 
+import com.luanvo.busa.io.resquest.AddNewProductRequest;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "products")
+@NoArgsConstructor
 public class ProductEntity {
 
     @Id
@@ -48,4 +52,25 @@ public class ProductEntity {
 
     @Column(name = "thumb_img")
     private String thumb_img;
+
+    @Column(name = "create_at")
+    private Date create_date;
+
+    public static ProductEntity addNew(AddNewProductRequest request){
+        ProductEntity productEntity = new ProductEntity();
+        productEntity.setCategories_child_id(request.getCategories_child_id());
+        productEntity.setCategories_id(request.getCategories_id());
+        productEntity.setCity_id(request.getCity_id());
+        productEntity.setDescription(request.getDescription());
+        productEntity.setDistrict_id(request.getDistrict_id());
+        productEntity.setWard_id(request.getWard_id());
+        productEntity.setName(request.getName());
+        productEntity.setPrice(request.getPrice());
+        productEntity.setPrice_max(request.getPrice_max());
+        productEntity.setPrice_min(request.getPrice_min());
+        productEntity.setThumb_img(request.getThumb_images());
+        productEntity.setType(request.getType());
+        productEntity.setCreate_date(new Date());
+        return productEntity;
+    }
 }

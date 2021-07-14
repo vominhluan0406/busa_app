@@ -1,9 +1,11 @@
 package com.luanvo.busa.service.imp;
 
+import com.luanvo.busa.io.entity.ImagesProductEntity;
 import com.luanvo.busa.io.entity.ProductEntity;
 import com.luanvo.busa.io.response.GetListProductResponse;
+import com.luanvo.busa.io.resquest.AddNewProductRequest;
 import com.luanvo.busa.io.resquest.GetAllProductRequest;
-import com.luanvo.busa.io.values.Configuration;
+import com.luanvo.busa.repository.ImagesProductRepository;
 import com.luanvo.busa.repository.ProductRepository;
 import com.luanvo.busa.service.ProductService;
 import com.luanvo.busa.utils.ErrorContent;
@@ -28,19 +30,47 @@ public class ProductServiceImp implements ProductService {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    ImagesProductRepository imagesProductRepository;
+
     @Override
     public JSONObject getList(GetAllProductRequest request) {
         try {
 
             Pageable pageable = PageRequest.of(request.getPage(), pageLimit);
-            Page<ProductEntity> dataDB = productRepository.findByFilter(request.getSearch(),request.getPrice_min(),request.getPrice_max(),request.getCity_id(),pageable);
+            Page<ProductEntity> dataDB = productRepository.findByFilter(request.getSearch(), request.getPrice_min(), request.getPrice_max(), request.getCity_id(), pageable);
             List<GetListProductResponse> data = dataDB.getContent().stream().map(GetListProductResponse::new).collect(Collectors.toList());
 
             JSONObject response = new JSONObject();
             response.put(Response.DATA,data);
             response.put(Response.TOTAL,dataDB.getTotalElements());
             return Response.success(response);
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.error(ErrorContent.ERROR.getMsg());
+        }
+    }
+
+    @Override
+    public JSONObject getDetail(int id) {
+        return null;
+    }
+
+    @Override
+    public JSONObject addNew(AddNewProductRequest request) {
+        try {
+            ProductEntity productEntity = ProductEntity.addNew(request);
+            productRepository.save(productEntity);
+
+            request.getImages().forEach(image -> {
+                ImagesProductEntity imagesProductEntity = new ImagesProductEntity();
+                imagesProductEntity.setProduct_id(productEntity.getId());
+                imagesProductEntity.setValue(image);
+                imagesProductRepository.save(imagesProductEntity);
+            });
+
+            return Response.success();
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.error(ErrorContent.ERROR.getMsg());
         }

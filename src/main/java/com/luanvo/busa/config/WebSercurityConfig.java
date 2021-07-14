@@ -6,6 +6,7 @@ import com.luanvo.busa.utils.JwtFilter;
 import com.luanvo.busa.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -50,7 +51,7 @@ public class WebSercurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET,"/info/*").hasAuthority("USER")
                 .anyRequest().permitAll();
 
         // Xác thực JWT
